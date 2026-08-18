@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="romantic">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You — A Birthday Surprise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Jost:wght@300;400;500;600&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<canvas id="live-bg"></canvas>
+<div id="aurora-overlay"></div>
+<button id="theme-toggle" aria-label="Switch theme">🎨 Theme</button>
+<button id="music-toggle" aria-label="Toggle music">🎵 Music</button>
+<div class="music-bars" id="music-bars">
+  <span></span><span></span><span></span><span></span><span></span>
+</div>
+<div id="petal-layer"></div>
+<div class="particle-layer" id="particle-layer"></div>
+<div class="balloon-layer" id="balloon-layer"></div>
+<div id="rose-petal-rain"></div>
+<div id="floral-corner-tl" aria-hidden="true"></div>
+<div id="floral-corner-br" aria-hidden="true"></div>
+<canvas id="confetti-canvas"></canvas>
+<div id="sparkle-trail"></div>
+
+<!-- 3D LOVE foil balloons (glowing) -->
+<div class="love-balloon bl-tl" aria-hidden="true">
+  <svg class="balloon-svg" viewBox="0 0 96 150" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="foil-tl" x1="0" y1="0" x2="1" y2="1">
+        <stop class="st1" offset="0"/><stop class="st2" offset="0.5"/><stop class="st3" offset="1"/>
+      </linearGradient>
+      <linearGradient id="gloss-tl" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.18"/>
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="halo-tl" cx="0.5" cy="0.5" r="0.5">
+        <stop class="halo-stop" offset="0"/>
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="spec-tl" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+      <clipPath id="clip-tl"><text class="balloon-clip-text" x="48" y="80">L</text></clipPath>
+      <filter id="glow-tl" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <circle class="balloon-halo" cx="48" cy="74" r="62" fill="url(#halo-tl)"/>
+    <path class="balloon-string" d="M48 117 C44 126, 55 133, 49 141 C46 146, 50 147, 48 148"/>
+    <path class="balloon-knot" d="M44 110 C44 106 52 106 52 110 C52 114 50 117 48 118 C46 117 44 114 44 110 Z"/>
+    <g filter="url(#glow-tl)">
+      <text class="balloon-text" x="48" y="80" fill="url(#foil-tl)" stroke="url(#foil-tl)">L</text>
+      <rect x="0" y="0" width="96" height="150" fill="url(#gloss-tl)" clip-path="url(#clip-tl)"/>
+      <ellipse class="balloon-spec" cx="32" cy="52" rx="15" ry="28" fill="url(#spec-tl)" clip-path="url(#clip-tl)" transform="rotate(-18 32 52)"/>
+      <ellipse class="balloon-spec2" cx="62" cy="96" rx="13" ry="20" fill="url(#spec-tl)" clip-path="url(#clip-tl)" transform="rotate(16 62 96)"/>
+    </g>
+  </svg>
+</div>
+<div class="love-balloon bl-tr" aria-hidden="true">
+  <svg class="balloon-svg" viewBox="0 0 96 150" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="foil-tr" x1="0" y1="0" x2="1" y2="1">
+        <stop class="st1" offset="0"/><stop class="st2" offset="0.5"/><stop class="st3" offset="1"/>
+      </linearGradient>
+      <linearGradient id="gloss-tr" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.18"/>
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="halo-tr" cx="0.5" cy="0.5" r="0.5">
+        <stop class="halo-stop" offset="0"/>
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="spec-tr" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+      <clipPath id="clip-tr"><text class="balloon-clip-text" x="48" y="80">O</text></clipPath>
+      <filter id="glow-tr" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <circle class="balloon-halo" cx="48" cy="74" r="62" fill="url(#halo-tr)"/>
+    <path class="balloon-string" d="M48 117 C44 126, 55 133, 49 141 C46 146, 50 147, 48 148"/>
+    <path class="balloon-knot" d="M44 110 C44 106 52 106 52 110 C52 114 50 117 48 118 C46 117 44 114 44 110 Z"/>
+    <g filter="url(#glow-tr)">
+      <text class="balloon-text" x="48" y="80" fill="url(#foil-tr)" stroke="url(#foil-tr)">O</text>
+      <rect x="0" y="0" width="96" height="150" fill="url(#gloss-tr)" clip-path="url(#clip-tr)"/>
+      <ellipse class="balloon-spec" cx="32" cy="52" rx="15" ry="28" fill="url(#spec-tr)" clip-path="url(#clip-tr)" transform="rotate(-18 32 52)"/>
+      <ellipse class="balloon-spec2" cx="62" cy="96" rx="13" ry="20" fill="url(#spec-tr)" clip-path="url(#clip-tr)" transform="rotate(16 62 96)"/>
+    </g>
+  </svg>
+</div>
+<div class="love-balloon bl-bl" aria-hidden="true">
+  <svg class="balloon-svg" viewBox="0 0 96 150" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="foil-bl" x1="0" y1="0" x2="1" y2="1">
+        <stop class="st1" offset="0"/><stop class="st2" offset="0.5"/><stop class="st3" offset="1"/>
+      </linearGradient>
+      <linearGradient id="gloss-bl" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.18"/>
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="halo-bl" cx="0.5" cy="0.5" r="0.5">
+        <stop class="halo-stop" offset="0"/>
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="spec-bl" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+      <clipPath id="clip-bl"><text class="balloon-clip-text" x="48" y="80">V</text></clipPath>
+      <filter id="glow-bl" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <circle class="balloon-halo" cx="48" cy="74" r="62" fill="url(#halo-bl)"/>
+    <path class="balloon-string" d="M48 117 C44 126, 55 133, 49 141 C46 146, 50 147, 48 148"/>
+    <path class="balloon-knot" d="M44 110 C44 106 52 106 52 110 C52 114 50 117 48 118 C46 117 44 114 44 110 Z"/>
+    <g filter="url(#glow-bl)">
+      <text class="balloon-text" x="48" y="80" fill="url(#foil-bl)" stroke="url(#foil-bl)">V</text>
+      <rect x="0" y="0" width="96" height="150" fill="url(#gloss-bl)" clip-path="url(#clip-bl)"/>
+      <ellipse class="balloon-spec" cx="32" cy="52" rx="15" ry="28" fill="url(#spec-bl)" clip-path="url(#clip-bl)" transform="rotate(-18 32 52)"/>
+      <ellipse class="balloon-spec2" cx="62" cy="96" rx="13" ry="20" fill="url(#spec-bl)" clip-path="url(#clip-bl)" transform="rotate(16 62 96)"/>
+    </g>
+  </svg>
+</div>
+<div class="love-balloon bl-br" aria-hidden="true">
+  <svg class="balloon-svg" viewBox="0 0 96 150" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="foil-br" x1="0" y1="0" x2="1" y2="1">
+        <stop class="st1" offset="0"/><stop class="st2" offset="0.5"/><stop class="st3" offset="1"/>
+      </linearGradient>
+      <linearGradient id="gloss-br" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.18"/>
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="halo-br" cx="0.5" cy="0.5" r="0.5">
+        <stop class="halo-stop" offset="0"/>
+        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="spec-br" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+      <clipPath id="clip-br"><text class="balloon-clip-text" x="48" y="80">E</text></clipPath>
+      <filter id="glow-br" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <circle class="balloon-halo" cx="48" cy="74" r="62" fill="url(#halo-br)"/>
+    <path class="balloon-string" d="M48 117 C44 126, 55 133, 49 141 C46 146, 50 147, 48 148"/>
+    <path class="balloon-knot" d="M44 110 C44 106 52 106 52 110 C52 114 50 117 48 118 C46 117 44 114 44 110 Z"/>
+    <g filter="url(#glow-br)">
+      <text class="balloon-text" x="48" y="80" fill="url(#foil-br)" stroke="url(#foil-br)">E</text>
+      <rect x="0" y="0" width="96" height="150" fill="url(#gloss-br)" clip-path="url(#clip-br)"/>
+      <ellipse class="balloon-spec" cx="32" cy="52" rx="15" ry="28" fill="url(#spec-br)" clip-path="url(#clip-br)" transform="rotate(-18 32 52)"/>
+      <ellipse class="balloon-spec2" cx="62" cy="96" rx="13" ry="20" fill="url(#spec-br)" clip-path="url(#clip-br)" transform="rotate(16 62 96)"/>
+    </g>
+  </svg>
+</div>
+
+<!-- ============ STAGE 0: LOCK ============ -->
+<section class="stage active" id="stage-locked">
+  <div class="lock-card">
+    <div class="lock-icon-wrap">
+      <span class="lock-icon">🔐</span>
+      <div class="lock-ring"></div>
+    </div>
+    <div class="lock-question" id="lock-question"></div>
+    <div class="lock-input-row">
+      <input type="text" id="lock-input" autocomplete="off" spellcheck="false">
+      <button id="lock-unlock-btn">Unlock</button>
+    </div>
+    <div class="lock-error" id="lock-error"></div>
+    <div class="lock-hint" id="lock-hint"><span class="lock-hint-icon">💋</span> need a hint?</div>
+    <div class="lock-hint-text" id="lock-hint-text"></div>
+    <div class="lock-success" id="lock-success"></div>
+  </div>
+</section>
+
+<!-- ============ STAGE 1: LOADING (theatrical petal curtain) ============ -->
+<section class="stage" id="stage-loading">
+  <div class="curtain-scene" id="curtain-scene">
+    <div class="curtain-rod" aria-hidden="true"></div>
+    <div class="curtain-valance" id="curtain-valance" aria-hidden="true"></div>
+    <div class="curtain-panel curtain-left" id="curtain-left" aria-hidden="true"></div>
+    <div class="curtain-panel curtain-right" id="curtain-right" aria-hidden="true"></div>
+    <div class="curtain-gap-glow" aria-hidden="true"></div>
+    <div class="countdown-wrap" aria-hidden="true">
+      <div class="countdown-num" id="countdown-num">5</div>
+      <div class="countdown-fx" id="countdown-fx"></div>
+    </div>
+    <div class="reveal-burst" aria-hidden="true"></div>
+    <div class="reveal-flash" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- ============ STAGE 2: CAKE ============ -->
+<section class="stage" id="stage-cake">
+  <img src="images/bear/bear2.jpg" alt="" class="cake-deco cake-deco-1" aria-hidden="true">
+  <img src="images/bear/bear3.jpg" alt="" class="cake-deco cake-deco-2" aria-hidden="true">
+  <img src="images/snoopy/sno3.jpg" alt="" class="cake-deco cake-deco-3" aria-hidden="true">
+  <img src="images/snoopy/sno4.jpg" alt="" class="cake-deco cake-deco-4" aria-hidden="true">
+  <div class="cake-layout">
+    <div class="cake-left">
+      <div class="eyebrow">Happy Birthday</div>
+      <div class="cake-image-scene">
+        <div class="cake">
+          <img src="images/cake/cake.jpg" alt="Birthday cake" class="cake-img">
+          <div class="candles-wrap" id="candles-wrap"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cake-right">
+      <div class="cake-name-sign" id="cake-name-sign"></div>
+      <h1 id="cake-heading">One wish, coming up.</h1>
+      <div class="age-counter" id="age-counter"></div>
+      <p class="cake-subtext">Make it count — then blow them all out.</p>
+      <button class="blow-btn" id="blow-btn">Blow out the candles 🌬️</button>
+      <div class="mic-hint">(you can also actually blow into your mic — I'll try to listen)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 3: MESSAGE ============ -->
+<section class="stage scrollable" id="stage-message">
+  <div class="msg-light-leaks" aria-hidden="true"></div>
+  <div class="msg-scene">
+    <img src="images/design/ballon.jpg" alt="" class="msg-decor msg-balloon" aria-hidden="true">
+    <div class="msg-board-wrap">
+      <img src="images/design/board.jpg" alt="" class="msg-board-img" aria-hidden="true">
+      <div class="msg-board-text">
+        <div id="message-lines"></div>
+      </div>
+    </div>
+    <div class="msg-flower-col">
+      <img src="images/design/flower.jpg" alt="" class="msg-decor msg-flower" aria-hidden="true">
+      <button class="to-wish-btn" id="to-wish-btn">Make a wish →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 4: WISHLIST ============ -->
+<section class="stage" id="stage-wish">
+  <img src="images/bear/bear1.jpg" alt="" class="wish-deco wish-deco-1" aria-hidden="true">
+  <img src="images/bear/bday.jpg" alt="" class="wish-deco wish-deco-2" aria-hidden="true">
+  <img src="images/snoopy/sno1.jpg" alt="" class="wish-deco wish-deco-3" aria-hidden="true">
+  <img src="images/snoopy/sno2.jpg" alt="" class="wish-deco wish-deco-4" aria-hidden="true">
+  <div class="wish-card">
+    <div class="wish-petals">
+      <div class="wish-petal wp1"></div>
+      <div class="wish-petal wp2"></div>
+      <div class="wish-petal wp3"></div>
+      <div class="wish-petal wp4"></div>
+      <div class="wish-petal wp5"></div>
+    </div>
+    <div class="wish-corner-flower wc-tl">
+      <div class="wc-petal"></div><div class="wc-petal"></div><div class="wc-petal"></div><div class="wc-petal"></div><div class="wc-center"></div><div class="wc-leaf wc-leaf1"></div><div class="wc-leaf wc-leaf2"></div>
+    </div>
+    <div class="wish-corner-flower wc-br">
+      <div class="wc-petal"></div><div class="wc-petal"></div><div class="wc-petal"></div><div class="wc-petal"></div><div class="wc-center"></div><div class="wc-leaf wc-leaf1"></div><div class="wc-leaf wc-leaf2"></div>
+    </div>
+    <div class="eyebrow">One more thing</div>
+    <h2>What do you wish for?</h2>
+    <div class="sub">Type as many as you like — big, small, silly, real.</div>
+    <div class="wish-input-row">
+      <input type="text" id="wish-input" placeholder="I wish for…" maxlength="80">
+      <button id="wish-add-btn">Add</button>
+    </div>
+    <div class="wish-divider"><span class="wd-leaf wd-l"></span><span class="wd-dot"></span><span class="wd-line"></span><span class="wd-dot"></span><span class="wd-leaf wd-r"></span></div>
+    <ul id="wish-list"></ul>
+    <button class="save-wish-btn" id="wish-save-btn" disabled>Seal my wishes</button>
+    <div id="wish-sealed">
+      <div class="wish-reveal" id="wish-reveal"></div>
+      <div class="wish-prayer" id="wish-prayer">
+        <div class="prayer-icon">🕊️</div>
+        <div class="prayer-text" id="prayer-text"></div>
+      </div>
+      <div class="script sealed-text">sealed with love ✧</div>
+      <button class="gallery-btn" id="to-gallery-btn">Step into our gallery →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 5: GALLERY (Museum of Us) ============ -->
+<section class="stage scrollable" id="stage-gallery">
+  <div class="gallery-inner">
+    <header class="museum-header">
+      <div class="museum-rule"><span></span></div>
+      <div class="museum-eyebrow">a private exhibition &middot; est. the day we met</div>
+      <h2 class="museum-title">Museum <em>of</em> Us</h2>
+      <div class="museum-sub">curated with love, by someone who adores you</div>
+      <div class="museum-rule reverse"><span></span></div>
+    </header>
+
+    <div class="museum-welcome">
+      <div class="mw-plaque">
+        <span class="mw-head">Welcome to the gallery</span>
+        <span class="mw-body">photography allowed &mdash; it's encouraged</span>
+      </div>
+    </div>
+
+    <div class="museum-hall">
+      <div class="gallery-grid" id="gallery-grid"></div>
+      <div class="museum-floor"></div>
+    </div>
+
+    <div class="closing">
+      <div class="closing-plaque">
+        <span class="cp-ornament">&hearts;</span>
+        <div class="line1">Happy birthday, <span id="closing-name">love</span>.</div>
+        <div class="line2" id="closing-signature">forever yours</div>
+        <span class="cp-foot">end of exhibition &middot; thank you for visiting</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Photo viewer" aria-hidden="true">
+  <button class="lightbox-close" id="lightbox-close" aria-label="Close photo viewer">&times;</button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  <video class="lightbox-video" id="lightbox-video" controls playsinline preload="metadata"></video>
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+  <div class="lightbox-date" id="lightbox-date"></div>
+</div>
+
+<!-- Heart explosion layer -->
+<div id="heart-burst-layer"></div>
+
+<script src="js/config.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>
