@@ -123,6 +123,7 @@ function showStage(id){
 // ---------- music toggle ----------
 var bgAudio = null;
 var bgAudioPlaying = false;
+var audioUnlocked = false;
 (function initMusic(){
   const btn = $('#music-toggle');
   bgAudio = new Audio(CONFIG.music.src);
@@ -130,8 +131,9 @@ var bgAudioPlaying = false;
   bgAudio.preload = 'auto';
   bgAudio.volume = CONFIG.music.volume;
 
-  function safePlay(){
-    if(!bgAudio || bgAudioPlaying) return;
+  function unlockAudio(){
+    if(audioUnlocked) return;
+    audioUnlocked = true;
     bgAudio.play().then(function(){
       bgAudioPlaying = true;
       btn.classList.add('playing');
@@ -139,10 +141,15 @@ var bgAudioPlaying = false;
     }).catch(function(){});
   }
 
+  function safePlay(){
+    if(!bgAudio || bgAudioPlaying) return;
+    unlockAudio();
+  }
+
   // start playing on the very first user interaction (prevents browser autoplay block)
-  document.addEventListener('click', safePlay, { once: false });
-  document.addEventListener('keydown', safePlay, { once: false });
-  document.addEventListener('touchstart', safePlay, { once: false });
+  document.addEventListener('click', unlockAudio, { once: false });
+  document.addEventListener('keydown', unlockAudio, { once: false });
+  document.addEventListener('touchstart', unlockAudio, { once: false });
 
   btn.addEventListener('click', function(e){
     e.stopPropagation();
@@ -165,6 +172,27 @@ var bgAudioPlaying = false;
     }
   });
 })();
+
+function tryAutoPlayMusic(){
+  if(bgAudioPlaying || !bgAudio) return;
+  var btn = $('#music-toggle');
+  bgAudio.play().then(function(){
+    bgAudioPlaying = true;
+    audioUnlocked = true;
+    if(btn){ btn.classList.add('playing'); btn.textContent = '🎶 Playing'; }
+  }).catch(function(){
+    // browser blocked autoplay — retry every 500ms until a user gesture unlocks it
+    var retry = setInterval(function(){
+      if(bgAudioPlaying || audioUnlocked){ clearInterval(retry); return; }
+      bgAudio.play().then(function(){
+        bgAudioPlaying = true;
+        audioUnlocked = true;
+        clearInterval(retry);
+        if(btn){ btn.classList.add('playing'); btn.textContent = '🎶 Playing'; }
+      }).catch(function(){});
+    }, 500);
+  });
+}
 
 // ---------- live animated background (never stops) ----------
 (function initLiveBg(){
@@ -825,13 +853,7 @@ function loadingSequence(){
     if(n === 0){
       playNumber(n, function(){
         playRevealChime();
-        if(bgAudio && !bgAudioPlaying && bgAudio.paused){
-          bgAudio.play().then(function(){
-            bgAudioPlaying = true;
-            var btn = $('#music-toggle');
-            if(btn){ btn.classList.add('playing'); btn.textContent = '🎶 Playing'; }
-          }).catch(function(){});
-        }
+        tryAutoPlayMusic();
         showStage('stage-cake');
         animateAgeCounter();
         tryStartMicBlow();
