@@ -11,8 +11,8 @@ const CONFIG = {
   cakeMessage: "Happy Birthday,\nMy Love",
 
   birthdayMessage: [
-    "Sayang, today the world celebrates you,",
-    "but I feel blessed to love you.",
+    "Sayang, today is your special day,",
+    "and I feel blessed to love you.",
 
     "You make every ordinary day feel brighter,",
     "with your smile, your laugh, and presence.",
@@ -70,7 +70,7 @@ const CONFIG = {
 
     {
       src: "images/photo5.jpg",
-      caption: "Exchanging Our Love",
+      caption: "Before Holiday Sessions",
       date: "Chapter Five",
       backText:
         "This was our last date before our holiday began. We exchanged gifts, shared laughter, and spent quality time together. It wasn't about how expensive the gifts were—it was about the love and thought behind them. Every little moment with you means the world to me.",
@@ -102,7 +102,7 @@ const CONFIG = {
 
     {
       src: "images/photo9.jpg",
-      caption: "So pretty, So Ordinary",
+      caption: "So pretty, Extraordinary",
       date: "Chapter Nine",
       backText:
         "We never needed big plans to make a day unforgettable. Give me you, a sky that can't decide its color, and a little time — and I'll call it perfect. This is what our ordinary, golden hours look like.",

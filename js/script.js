@@ -3,8 +3,13 @@ function $(sel){ return document.querySelector(sel); }
 function $all(sel){ return document.querySelectorAll(sel); }
 
 function showStage(id){
-  $all('.stage').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById(id);
+  var current = document.querySelector('.stage.active');
+  if(current && current.id !== id){
+    current.classList.add('stage-leaving');
+    current.classList.remove('active');
+    setTimeout(function(){ current.classList.remove('stage-leaving'); }, 800);
+  }
+  var el = document.getElementById(id);
   if(el) el.classList.add('active');
 }
 
@@ -19,7 +24,6 @@ function showStage(id){
   }
 
   if(!enabled){
-    showStage('stage-loading');
     loadingSequence();
     return;
   }
@@ -126,18 +130,19 @@ var bgAudioPlaying = false;
   bgAudio.preload = 'auto';
   bgAudio.volume = CONFIG.music.volume;
 
-  // start playing on the very first user interaction (prevents browser autoplay block)
-  function autoStart(){
-    if(bgAudioPlaying) return;
+  function safePlay(){
+    if(!bgAudio || bgAudioPlaying) return;
     bgAudio.play().then(function(){
       bgAudioPlaying = true;
       btn.classList.add('playing');
       btn.textContent = '🎶 Playing';
     }).catch(function(){});
   }
-  document.addEventListener('click', autoStart, { once: false });
-  document.addEventListener('keydown', autoStart, { once: false });
-  document.addEventListener('touchstart', autoStart, { once: false });
+
+  // start playing on the very first user interaction (prevents browser autoplay block)
+  document.addEventListener('click', safePlay, { once: false });
+  document.addEventListener('keydown', safePlay, { once: false });
+  document.addEventListener('touchstart', safePlay, { once: false });
 
   btn.addEventListener('click', function(e){
     e.stopPropagation();
@@ -147,11 +152,7 @@ var bgAudioPlaying = false;
       btn.classList.remove('playing');
       btn.textContent = '🎵 Music';
     } else {
-      bgAudio.play().then(function(){
-        bgAudioPlaying = true;
-        btn.classList.add('playing');
-        btn.textContent = '🎶 Playing';
-      }).catch(function(){});
+      safePlay();
     }
   });
 
@@ -159,7 +160,9 @@ var bgAudioPlaying = false;
   document.addEventListener('visibilitychange', function(){
     if(!bgAudioPlaying) return;
     if(document.hidden) return;
-    bgAudio.play().catch(function(){});
+    if(bgAudio && bgAudio.paused){
+      bgAudio.play().catch(function(){});
+    }
   });
 })();
 
@@ -741,19 +744,78 @@ const Confetti = (function(){
 })();
 
 // ---------- STAGE 0: loading (romantic countdown) ----------
+var countdownAudioCtx = null;
+function getCountdownCtx(){
+  if(!countdownAudioCtx){
+    countdownAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return countdownAudioCtx;
+}
+
+function playCountdownTick(n){
+  try {
+    var ctx = getCountdownCtx();
+    if(ctx.state === 'suspended') ctx.resume();
+
+    var now = ctx.currentTime;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    // pitch rises as countdown approaches 0
+    var baseFreq = 440 + (7 - n) * 80;
+    osc.type = n === 0 ? 'triangle' : 'sine';
+    osc.frequency.setValueAtTime(baseFreq, now);
+    osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, now + 0.08);
+    osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.8, now + 0.2);
+
+    // volume envelope — short, clean tick
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.25, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+    osc.start(now);
+    osc.stop(now + 0.35);
+  } catch(e){}
+}
+
+function playRevealChime(){
+  try {
+    var ctx = getCountdownCtx();
+    if(ctx.state === 'suspended') ctx.resume();
+    var now = ctx.currentTime;
+    var notes = [523, 659, 784, 1047];
+    notes.forEach(function(freq, i){
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(0, now + i * 0.1);
+      gain.gain.linearRampToValueAtTime(0.18, now + i * 0.1 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.5);
+      osc.start(now + i * 0.1);
+      osc.stop(now + i * 0.1 + 0.55);
+    });
+  } catch(e){}
+}
+
 function loadingSequence(){
   var numEl = $('#countdown-num');
   if(!numEl){ console.error('loadingSequence: #countdown-num missing'); return; }
 
-  var digits = [5, 4, 3, 2, 1, 0];
+  var digits = [7, 6, 5, 4, 3, 2, 1, 0];
   var step = 0;
-  var HOLD = 1000; // each number shows for exactly one second
+  var HOLD = 1000;
 
   function playNumber(n, done){
     numEl.textContent = String(n);
     numEl.classList.remove('show');
     void numEl.offsetWidth;
     numEl.classList.add('show');
+    playCountdownTick(n);
     setTimeout(done, HOLD);
   }
 
@@ -762,19 +824,18 @@ function loadingSequence(){
     step++;
     if(n === 0){
       playNumber(n, function(){
-        // auto-play music as the surprise reveals
-        if(bgAudio && !bgAudioPlaying){
+        playRevealChime();
+        if(bgAudio && !bgAudioPlaying && bgAudio.paused){
           bgAudio.play().then(function(){
             bgAudioPlaying = true;
             var btn = $('#music-toggle');
             if(btn){ btn.classList.add('playing'); btn.textContent = '🎶 Playing'; }
           }).catch(function(){});
         }
-        revealSurprise(function(){
-          showStage('stage-cake');
-          animateAgeCounter();
-          tryStartMicBlow();
-        });
+        showStage('stage-cake');
+        animateAgeCounter();
+        tryStartMicBlow();
+        revealSurprise();
       });
     } else {
       playNumber(n, playStep);

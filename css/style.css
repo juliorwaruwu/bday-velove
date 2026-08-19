@@ -524,11 +524,12 @@ button{ font-family:'Jost', sans-serif; cursor:pointer; border:none; background:
   padding:calc(6vh + env(safe-area-inset-top,0px)) 6vw calc(6vh + env(safe-area-inset-bottom,0px));
   opacity:0; visibility:hidden; pointer-events:none;
   transform:translateY(30px) scale(0.96);
-  transition:opacity .9s cubic-bezier(.25,.46,.45,.94), transform .9s cubic-bezier(.25,.46,.45,.94), visibility .9s;
+  transition:opacity .8s cubic-bezier(.4,0,.2,1), transform .8s cubic-bezier(.4,0,.2,1), visibility .8s;
   text-align:center;
   will-change:opacity,transform;
 }
-.stage.active{ opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0) scale(1); transition-delay:.08s; }
+.stage.active{ opacity:1; visibility:visible; pointer-events:auto; transform:translateY(0) scale(1); transition-delay:.7s; }
+.stage.stage-leaving{ transition-delay:0s !important; transform:translateY(-15px) scale(0.98); }
 .stage.scrollable{ overflow-y:auto; padding-top:calc(6vh + env(safe-area-inset-top,0px)); padding-bottom:calc(6vh + env(safe-area-inset-bottom,0px)); }
 
 .eyebrow{
@@ -1829,169 +1830,194 @@ button{ font-family:'Jost', sans-serif; cursor:pointer; border:none; background:
 /* ================= RESPONSIVE ================= */
 
 /* --- Small phones (≤380px) --- */
-@media (max-width:380px){
-  .stage{ padding:calc(4vh + env(safe-area-inset-top,0px)) 4vw calc(4vh + env(safe-area-inset-bottom,0px)); }
+/* ========== ALL PHONES (≤600px) — unified mobile layout ========== */
+@media (max-width:600px){
+  /* --- global --- */
+  .stage{
+    padding:calc(4vh + env(safe-area-inset-top,0px)) 5vw calc(4vh + env(safe-area-inset-bottom,0px));
+    overflow:hidden;
+  }
+  .stage.scrollable{
+    overflow-y:auto; overflow-x:hidden;
+    padding:calc(5vh + env(safe-area-inset-top,0px)) 5vw calc(5vh + env(safe-area-inset-bottom,0px));
+  }
+  .eyebrow{ font-size:clamp(0.55rem,2.2vw,0.7rem); letter-spacing:0.25em; margin-bottom:8px; }
 
-  .countdown-num{ font-size:clamp(3.6rem, 20vh, 5.5rem); }
+  /* --- countdown & curtain --- */
+  .countdown-num{ font-size:clamp(4rem,22vh,8rem); }
   .countdown-wrap{ top:50%; }
+  .curtain-rod{ top:18px; height:8px; }
+  .curtain-rod::before,.curtain-rod::after{ width:18px; height:18px; top:-5px; }
+  .curtain-rod::before{ left:-6px; }
+  .curtain-rod::after{ right:-6px; }
+  .curtain-valance{ top:26px; height:70px; }
 
-  .age-counter{ font-size:1.2rem; }
-
-  .music-bars{ left:80px; bottom:16px; height:18px; }
+  /* --- toggle buttons (bottom of screen) --- */
+  #theme-toggle, #music-toggle{
+    position:fixed; top:auto;
+    bottom:calc(14px + env(safe-area-inset-bottom,0px));
+    padding:clamp(5px,1.8vw,8px) clamp(10px,3vw,16px);
+    font-size:clamp(0.68rem,2.5vw,0.82rem);
+    border-radius:999px; z-index:100;
+  }
+  #theme-toggle{ right:calc(12px + env(safe-area-inset-right,0px)); }
+  #music-toggle{ left:calc(12px + env(safe-area-inset-left,0px)); right:auto; }
+  .music-bars{ left:clamp(70px,20vw,100px); bottom:calc(20px + env(safe-area-inset-bottom,0px)); height:18px; }
   .music-bars span{ width:2.5px; }
 
-  .candles-wrap{ gap:4px; }
-  .digit-grid{ grid-template-columns:repeat(5,10px); grid-template-rows:repeat(7,15px); gap:2px 3px; }
-  .candle{ height:15px; }
-  .candle .flame{ width:8px; height:11px; }
-  .candle .stick{ width:5px; height:9px; }
-  .cake-layout{ flex-direction:column; gap:12px; height:auto; min-height:100vh; padding-top:6vh; padding-bottom:4vh; }
-  .cake-img{ width:clamp(180px, 50vw, 260px); }
-  .cake-name-sign{ padding:5px 14px; font-size:1.1rem; }
-  .cake-name-sign::before,.cake-name-sign::after{ width:10px; height:10px; }
-  .cake-right h1{ font-size:1.3rem; }
-  .cake-subtext{ font-size:0.75rem; margin-bottom:10px; }
+  /* --- love balloons (corners, smaller) --- */
+  .love-balloon{ width:clamp(28px,9vw,40px); }
+  .bl-tl{ top:calc(10px + env(safe-area-inset-top,0px)); }
+  .bl-tr{ top:calc(10px + env(safe-area-inset-top,0px)); }
+  .bl-bl{ bottom:calc(70px + env(safe-area-inset-bottom,0px)); }
+  .bl-br{ bottom:calc(70px + env(safe-area-inset-bottom,0px)); }
 
-  .blow-btn{ padding:8px 20px; font-size:0.85rem; margin-top:4px; }
-  .mic-hint{ font-size:0.65rem; margin-top:2px; }
-
-  .love-line{ font-size:0.32rem; line-height:1.3; }
-  .love-line.script{ font-size:0.4rem; }
-  .to-wish-btn{ padding:3px 10px; font-size:0.5rem; margin-top:4px; }
-  .msg-balloon{ width:50px; }
-  .msg-flower{ width:45px; }
-  .msg-board-wrap{ max-width:88vw; }
-
-  .wish-card{ padding:24px 16px; border-radius:16px; }
-  .wish-card::before{ font-size:0.9rem; top:-12px; }
-  .wish-card h2{ font-size:1.15rem; }
-  .wish-card .sub{ font-size:0.8rem; margin-bottom:12px; }
-  .wish-input-row{ gap:6px; margin-bottom:10px; }
-  .wish-input-row input{ padding:9px 11px; font-size:0.85rem; border-radius:10px; }
-  .wish-input-row button{ padding:0 12px; font-size:0.82rem; border-radius:10px; }
-  .save-wish-btn{ padding:10px; font-size:0.88rem; border-radius:12px; }
-  #wish-list{ margin-bottom:12px; max-height:120px; }
-  #wish-list li{ padding:6px 9px; font-size:0.82rem; margin-bottom:4px; }
-  #wish-sealed{ margin-top:10px; }
-  .gallery-btn{ margin-top:10px; padding:8px 18px; font-size:0.82rem; }
-  .wish-corner-flower{ width:28px; height:28px; }
-  .wish-corner-flower .wc-petal{ width:9px; height:9px; }
-  .wish-corner-flower .wc-center{ width:6px; height:6px; top:8px; left:8px; }
-
-  .flower-bouquet{ width:90px; height:105px; }
-  .bouquet-paper{ width:50px; height:40px; }
-  .bouquet-wrap{ width:65px; height:55px; }
-  .bouquet-stems{ height:30px; bottom:30px; }
-  .bouquet-ribbon{ bottom:36px; }
-  .bf-1{ width:18px; height:18px; }
-  .bf-2{ width:15px; height:15px; }
-  .bf-3{ width:16px; height:16px; }
-  .bf-4{ width:14px; height:14px; }
-  .bf-5{ width:12px; height:12px; }
-  .bf-6{ width:10px; height:10px; }
-  .bf-7{ width:11px; height:11px; }
-  .bouquet-leaf{ width:12px; height:7px; }
-
-  .gallery-grid{ grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px; }
-  .exhibit-label .cap{ font-size:0.95rem; }
-  .exhibit-label .date{ font-size:0.55rem; }
-  .exhibit-label{ margin-top:8px; }
-  .museum-title{ font-size:1.6rem; }
-  .museum-eyebrow{ font-size:0.56rem; letter-spacing:0.3em; }
-  .museum-sub{ font-size:0.95rem; }
-  .museum-hall{ padding:34px 10px 6px; }
-  .artwork{ padding:7px; }
-  .mat{ padding:4px; }
-  .closing{ margin-top:28px; }
-  .closing-plaque{ padding:22px 18px; }
-  .closing .line1{ font-size:0.95rem; }
-  .closing .line2{ font-size:1.45rem; }
-
-  .eyebrow{ font-size:0.58rem; letter-spacing:0.25em; margin-bottom:10px; }
-
-  #theme-toggle,
-  #music-toggle{
-    padding:6px 12px; font-size:0.72rem; top:auto; bottom:calc(12px + env(safe-area-inset-bottom,0px));
+  /* ==================== STAGE: CAKE ==================== */
+  #stage-cake{ padding:0; }
+  .cake-layout{
+    flex-direction:column; align-items:center; justify-content:center;
+    gap:clamp(10px,3vw,20px); height:auto; min-height:100vh;
+    padding:clamp(8vh,12vh,14vh) clamp(12px,4vw,24px) clamp(6vh,10vh,12vh);
   }
-  #theme-toggle{ right:12px; }
-  #music-toggle{ left:12px; right:auto; }
+  .cake-left{ flex:none; }
+  .cake-right{ flex:none; max-width:90vw; }
 
-  .love-balloon{ width:32px; }
-  .bl-tr{ top:calc(12px + env(safe-area-inset-top,0px)); }
-  .bl-bl{ bottom:calc(74px + env(safe-area-inset-bottom,0px)); }
-  .bl-br{ bottom:calc(74px + env(safe-area-inset-bottom,0px)); }
+  .cake-deco{ opacity:0.65; }
+  .cake-deco-1{ width:clamp(50px,14vw,80px); top:5%; left:2%; }
+  .cake-deco-2{ width:clamp(45px,12vw,70px); bottom:8%; left:3%; }
+  .cake-deco-3{ width:clamp(48px,13vw,75px); top:6%; right:2%; }
+  .cake-deco-4{ width:clamp(42px,11vw,65px); bottom:7%; right:3%; }
 
-  .lock-card{ padding:28px 18px 24px; }
-  .lock-icon-wrap{ width:54px; height:54px; margin-bottom:8px; }
-  .lock-icon{ font-size:1.8rem; }
-  .lock-question{ font-size:1rem; margin-bottom:14px; }
+  .cake-img{ width:clamp(160px,45vw,280px); }
+  .candles-wrap{ gap:clamp(3px,1vw,5px); }
+  .digit-grid{ grid-template-columns:repeat(5,clamp(8px,2.5vw,13px)); grid-template-rows:repeat(7,clamp(12px,3.5vw,20px)); gap:2px clamp(3px,1vw,6px); }
+  .candle{ height:clamp(13px,3.5vw,20px); }
+  .candle .flame{ width:clamp(7px,2.2vw,12px); height:clamp(10px,3vw,16px); }
+  .candle .stick{ width:clamp(4px,1.3vw,7px); height:clamp(8px,2.5vw,14px); }
+
+  .cake-name-sign{
+    padding:clamp(4px,1.2vw,8px) clamp(10px,3vw,20px);
+    font-size:clamp(1rem,3.5vw,1.5rem);
+  }
+  .cake-name-sign::before,.cake-name-sign::after{ width:clamp(8px,2.5vw,12px); height:clamp(8px,2.5vw,12px); }
+
+  .cake-right h1{ font-size:clamp(1.2rem,5vw,1.8rem); margin-bottom:2px; }
+  .cake-subtext{ font-size:clamp(0.72rem,2.5vw,0.9rem); margin-bottom:clamp(8px,2vw,14px); max-width:85vw; }
+
+  .blow-btn{
+    padding:clamp(8px,2.5vw,14px) clamp(18px,6vw,32px);
+    font-size:clamp(0.85rem,3vw,1.1rem);
+    margin-top:clamp(4px,1vw,8px);
+  }
+  .mic-hint{ font-size:clamp(0.6rem,2vw,0.75rem); margin-top:2px; }
+  .age-counter{ font-size:clamp(1.1rem,4vw,1.6rem); }
+
+  /* ==================== STAGE: MESSAGE ==================== */
+  .msg-scene{
+    flex-direction:column; align-items:center; gap:0;
+    min-height:auto; padding:clamp(16px,4vw,28px) 0;
+  }
+  .msg-balloon{ width:clamp(45px,14vw,70px); margin-bottom:-8px; }
+  .msg-flower{ width:clamp(40px,12vw,60px); margin-top:-4px; }
+  .msg-flower-col{ gap:8px; }
+  .msg-board-wrap{ max-width:clamp(260px,88vw,400px); }
+  .love-line{ font-size:clamp(0.28rem,1.2vw,0.42rem); line-height:1.3; }
+  .love-line.script{ font-size:clamp(0.35rem,1.5vw,0.5rem); }
+  .to-wish-btn{
+    padding:clamp(4px,1.5vw,8px) clamp(10px,3vw,18px);
+    font-size:clamp(0.5rem,2vw,0.7rem);
+    margin-top:6px;
+  }
+
+  /* ==================== STAGE: WISH ==================== */
+  .wish-card{
+    padding:clamp(20px,5vw,32px) clamp(14px,4vw,24px);
+    border-radius:clamp(14px,4vw,22px);
+    max-height:82vh; max-width:92vw;
+  }
+  .wish-card::before{ font-size:clamp(0.8rem,2.5vw,1rem); top:clamp(-10px,-3vw,-14px); }
+  .wish-card h2{ font-size:clamp(1.1rem,4.5vw,1.5rem); margin-bottom:3px; }
+  .wish-card .sub{ font-size:clamp(0.75rem,2.8vw,0.9rem); margin-bottom:clamp(8px,2.5vw,16px); }
+
+  .wish-input-row{ gap:clamp(4px,1.5vw,8px); margin-bottom:clamp(8px,2.5vw,12px); }
+  .wish-input-row input{
+    padding:clamp(8px,2.5vw,12px) clamp(10px,3vw,14px);
+    font-size:clamp(0.82rem,3vw,0.95rem);
+    border-radius:clamp(8px,2.5vw,12px);
+  }
+  .wish-input-row button{
+    padding:0 clamp(10px,3vw,18px);
+    font-size:clamp(0.78rem,2.8vw,0.9rem);
+    border-radius:clamp(8px,2.5vw,12px);
+  }
+  .save-wish-btn{
+    padding:clamp(8px,2.5vw,12px);
+    font-size:clamp(0.82rem,3vw,0.95rem);
+    border-radius:clamp(10px,3vw,16px);
+  }
+  #wish-list{ max-height:clamp(80px,22vh,140px); margin-bottom:clamp(8px,2.5vw,14px); }
+  #wish-list li{ padding:clamp(5px,1.8vw,8px) clamp(7px,2.2vw,12px); font-size:clamp(0.78rem,2.8vw,0.88rem); margin-bottom:clamp(3px,1vw,6px); }
+  #wish-sealed{ margin-top:clamp(8px,2.5vw,14px); }
+  .sealed-text{ font-size:clamp(1rem,3.5vw,1.3rem); }
+  .gallery-btn{
+    margin-top:clamp(8px,2.5vw,14px);
+    padding:clamp(7px,2.2vw,10px) clamp(14px,4vw,22px);
+    font-size:clamp(0.78rem,2.8vw,0.88rem);
+  }
+
+  .wish-corner-flower{ width:clamp(22px,7vw,32px); height:clamp(22px,7vw,32px); }
+  .wish-corner-flower .wc-petal{ width:clamp(7px,2.2vw,10px); height:clamp(7px,2.2vw,10px); }
+  .wish-corner-flower .wc-center{ width:clamp(4px,1.3vw,6px); height:clamp(4px,1.3vw,6px); }
+
+  .wish-deco{ opacity:0.55; }
+  .wish-deco-1{ width:clamp(45px,12vw,70px); top:3%; left:2%; }
+  .wish-deco-2{ width:clamp(40px,10vw,60px); bottom:5%; left:2%; }
+  .wish-deco-3{ width:clamp(42px,11vw,65px); top:4%; right:2%; }
+  .wish-deco-4{ width:clamp(38px,10vw,58px); bottom:4%; right:3%; }
+
+  .flower-bouquet{ width:clamp(70px,20vw,100px); height:clamp(80px,24vw,115px); }
+  .bouquet-paper{ width:clamp(40px,12vw,60px); height:clamp(32px,10vw,48px); }
+  .bouquet-wrap{ width:clamp(55px,16vw,75px); height:clamp(45px,14vw,65px); }
+
+  /* ==================== STAGE: GALLERY ==================== */
+  .gallery-grid{ grid-template-columns:repeat(auto-fit, minmax(clamp(120px,38vw,160px),1fr)); gap:clamp(10px,3vw,16px); }
+  .exhibit-label .cap{ font-size:clamp(0.85rem,3vw,1rem); }
+  .exhibit-label .date{ font-size:clamp(0.5rem,1.8vw,0.6rem); }
+  .exhibit-label{ margin-top:6px; }
+  .artwork{ padding:clamp(5px,1.5vw,8px); }
+  .mat{ padding:clamp(3px,1vw,5px); }
+
+  .museum-header{ padding-top:clamp(4px,1.5vw,8px); }
+  .museum-title{ font-size:clamp(1.4rem,5.5vw,2rem); }
+  .museum-eyebrow{ font-size:clamp(0.48rem,1.8vw,0.6rem); letter-spacing:0.25em; }
+  .museum-sub{ font-size:clamp(0.85rem,3vw,1.05rem); }
+  .museum-hall{ padding:clamp(28px,8vw,40px) clamp(8px,3vw,14px) 6px; }
+  .mw-plaque{ padding:clamp(8px,2.5vw,12px) clamp(16px,5vw,28px); }
+  .mw-head{ font-size:clamp(0.85rem,3vw,1rem); }
+  .mw-body{ font-size:clamp(0.7rem,2.5vw,0.82rem); }
+
+  .closing{ margin-top:clamp(20px,6vw,36px); }
+  .closing-plaque{ padding:clamp(18px,5vw,28px) clamp(14px,4vw,24px); }
+  .closing .line1{ font-size:clamp(0.85rem,3vw,1.1rem); }
+  .closing .line2{ font-size:clamp(1.3rem,5vw,1.8rem); }
+  .cp-foot{ font-size:clamp(0.5rem,1.8vw,0.62rem); }
+
+  /* --- lock card --- */
+  .lock-card{ padding:clamp(22px,6vw,34px) clamp(14px,4vw,24px) clamp(18px,5vw,28px); max-width:90vw; }
+  .lock-icon-wrap{ width:clamp(44px,14vw,62px); height:clamp(44px,14vw,62px); margin-bottom:6px; }
+  .lock-icon{ font-size:clamp(1.5rem,5vw,2.2rem); }
+  .lock-question{ font-size:clamp(0.95rem,3.5vw,1.2rem); margin-bottom:clamp(10px,3vw,16px); }
   .lock-input-row{ max-width:100%; }
-  #lock-input{ padding:10px 12px; font-size:0.85rem; }
-  #lock-unlock-btn{ padding:0 14px; font-size:0.82rem; }
-  .lock-error{ font-size:0.75rem; margin-top:8px; }
-  .lock-hint{ font-size:0.75rem; margin-top:10px; }
-  .lock-success{ font-size:1rem; }
+  #lock-input{ padding:clamp(8px,2.5vw,12px) clamp(10px,3vw,14px); font-size:clamp(0.82rem,3vw,0.95rem); }
+  #lock-unlock-btn{ padding:0 clamp(12px,3.5vw,18px); font-size:clamp(0.78rem,2.8vw,0.9rem); }
+  .lock-error{ font-size:clamp(0.7rem,2.5vw,0.82rem); margin-top:6px; }
+  .lock-hint{ font-size:clamp(0.7rem,2.5vw,0.82rem); margin-top:8px; }
+  .lock-success{ font-size:clamp(0.9rem,3vw,1.1rem); }
 
+  /* --- lightbox --- */
   .lightbox-img{ max-width:95vw; max-height:55vh; }
-  .lightbox-caption{ font-size:1.15rem; }
-  .lightbox-close{ top:10px; right:10px; width:36px; height:36px; font-size:1.6rem; }
-}
-
-/* --- Regular phones (381px-600px) --- */
-@media (min-width:381px) and (max-width:600px){
-  .stage{ padding:calc(5vh + env(safe-area-inset-top,0px)) 5vw calc(5vh + env(safe-area-inset-bottom,0px)); }
-
-  .countdown-num{ font-size:clamp(4rem, 18vh, 7rem); }
-
-  .age-counter{ font-size:1.4rem; }
-
-  .music-bars{ left:90px; bottom:18px; }
-
-  .candles-wrap{ gap:5px; }
-  .digit-grid{ grid-template-columns:repeat(5,11px); grid-template-rows:repeat(7,17px); gap:2px 4px; }
-  .candle{ height:17px; }
-  .candle .flame{ width:10px; height:13px; }
-  .candle .stick{ width:6px; height:11px; }
-  .cake-layout{ flex-direction:column; gap:14px; height:auto; min-height:100vh; padding-top:5vh; padding-bottom:4vh; }
-  .cake-img{ width:clamp(200px, 50vw, 300px); }
-  .cake-right h1{ font-size:1.5rem; }
-  .cake-name-sign{ padding:6px 16px; }
-
-  .blow-btn{ padding:10px 26px; font-size:0.95rem; margin-top:6px; }
-  .mic-hint{ font-size:0.72rem; margin-top:3px; }
-
-  .love-line{ font-size:0.35rem; }
-  .love-line.script{ font-size:0.45rem; }
-  .to-wish-btn{ margin-top:4px; padding:4px 12px; font-size:0.55rem; }
-  .msg-balloon{ width:60px; }
-  .msg-flower{ width:55px; }
-  .msg-board-wrap{ max-width:84vw; }
-
-  .wish-card{ padding:28px 20px; border-radius:18px; }
-  .wish-card h2{ font-size:1.3rem; }
-  .wish-card .sub{ font-size:0.85rem; margin-bottom:14px; }
-  .wish-input-row{ margin-bottom:10px; }
-  #wish-list{ margin-bottom:14px; }
-  #wish-sealed{ margin-top:12px; }
-
-  .flower-bouquet{ width:110px; height:125px; }
-
-  .gallery-grid{ grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:16px; }
-  .closing{ margin-top:34px; }
-  .closing .line2{ font-size:1.6rem; }
-  .museum-hall{ padding:38px 14px 6px; }
-
-  #theme-toggle,
-  #music-toggle{
-    padding:7px 14px; font-size:0.78rem; top:auto; bottom:calc(14px + env(safe-area-inset-bottom,0px));
-  }
-  #theme-toggle{ right:14px; }
-  #music-toggle{ left:14px; right:auto; }
-
-  .love-balloon{ width:38px; }
-  .bl-tr{ top:calc(16px + env(safe-area-inset-top,0px)); }
-  .bl-bl{ bottom:calc(78px + env(safe-area-inset-bottom,0px)); }
-  .bl-br{ bottom:calc(78px + env(safe-area-inset-bottom,0px)); }
+  .lightbox-caption{ font-size:clamp(1rem,3.5vw,1.2rem); }
+  .lightbox-close{ top:8px; right:8px; width:clamp(32px,9vw,40px); height:clamp(32px,9vw,40px); font-size:clamp(1.4rem,4vw,1.8rem); }
 }
 
 /* --- Tablets (601px-900px) --- */
@@ -2033,57 +2059,6 @@ button{ font-family:'Jost', sans-serif; cursor:pointer; border:none; background:
   .exhibit:nth-child(3n+2) .artwork{ transform:none; }
   .exhibit:hover .artwork{ transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,.1), 0 16px 32px -12px rgba(0,0,0,.2); }
   .exhibit:active .artwork{ transform:scale(0.97); }
-}
-
-/* --- Very tall/narrow phones (portrait) --- */
-@media (max-width:600px) and (min-aspect-ratio:9/16){
-  .stage{ padding:calc(3vh + env(safe-area-inset-top,0px)) 5vw calc(3vh + env(safe-area-inset-bottom,0px)); }
-  .stage.scrollable{ padding-top:calc(4vh + env(safe-area-inset-top,0px)); padding-bottom:calc(4vh + env(safe-area-inset-bottom,0px)); }
-  .closing{ margin-top:22px; }
-}
-
-/* --- Landscape phones --- */
-@media (max-height:420px) and (orientation:landscape){
-  .stage{ padding:calc(2vh + env(safe-area-inset-top,0px)) 6vw calc(2vh + env(safe-area-inset-bottom,0px)); }
-  .countdown-num{ font-size:clamp(3rem, 26vh, 5rem); }
-  .countdown-wrap{ top:50%; }
-  .candles-wrap{ gap:3px; margin-bottom:0; }
-  .digit-grid{ grid-template-columns:repeat(5,9px); grid-template-rows:repeat(7,13px); gap:1px 3px; }
-  .candle{ height:13px; }
-  .candle .flame{ width:7px; height:10px; }
-  .candle .stick{ width:4px; height:8px; }
-  .cake-layout{ gap:20px; }
-  .cake-img{ width:clamp(160px, 30vw, 240px); }
-  .cake-right h1{ font-size:1.2rem; }
-  .cake-name-sign{ padding:4px 12px; font-size:1rem; }
-  .blow-btn{ padding:6px 16px; font-size:0.82rem; margin-top:2px; }
-  .flower-bouquet{ width:80px; height:90px; }
-  .love-line{ font-size:0.32rem; line-height:1.3; }
-  .love-line.script{ font-size:0.4rem; }
-  .to-wish-btn{ margin-top:3px; padding:3px 10px; font-size:0.5rem; }
-  .msg-balloon{ width:50px; }
-  .msg-flower{ width:45px; }
-  .wish-card{ padding:18px 14px; border-radius:14px; }
-  .wish-card h2{ font-size:1.1rem; }
-  .wish-card .sub{ font-size:0.78rem; margin-bottom:10px; }
-  .wish-input-row{ margin-bottom:8px; }
-  #wish-list{ max-height:80px; margin-bottom:10px; }
-  #wish-list li{ padding:5px 8px; font-size:0.78rem; }
-  #wish-sealed{ margin-top:8px; }
-  .gallery-btn{ margin-top:8px; padding:7px 16px; font-size:0.78rem; }
-  .wish-corner-flower{ width:24px; height:24px; }
-  .wish-corner-flower .wc-petal{ width:7px; height:7px; }
-  .wish-corner-flower .wc-center{ width:5px; height:5px; top:6px; left:6px; }
-  .gallery-grid{ grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:10px; }
-  .museum-hall{ padding:26px 8px 4px; }
-  .closing{ margin-top:16px; }
-  .closing .line1{ font-size:0.88rem; }
-  .closing .line2{ font-size:1.2rem; }
-  .closing-plaque{ padding:18px 14px; }
-
-  .love-balloon{ width:30px; }
-  .bl-bl{ bottom:calc(62px + env(safe-area-inset-bottom,0px)); }
-  .bl-br{ bottom:calc(62px + env(safe-area-inset-bottom,0px)); }
 }
 
 /* --- Reduced motion --- */
